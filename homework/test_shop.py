@@ -18,13 +18,15 @@ def all_products():
 
 
 @pytest.fixture()
-def all_products_test_quantity():
+def test_quantity():
     test_quantity = {
-        'book': [10, 10000],
-        'car': [10, 10000],
-        'pen': [10, 10000],
+        # product_name : [available quantity, more than available quantity]
+        'book': [100, 99999990],
+        'car': [10, 100],
+        'pen': [1293, 12940],
     }
     return test_quantity
+
 
 class TestProducts:
     """
@@ -32,23 +34,37 @@ class TestProducts:
     Например, текущий класс группирует тесты на класс Product
     """
 
-    def test_product_check_quantity(self, all_products):
-        expected_quantity = 10
-        all_products_list = ['book', 'car', 'pen']
+    def test_product_check_quantity(self, all_products, test_quantity):
+        # напишите проверки на метод check_quantity
+        all_products_list = all_products.keys()
         with check:
             for product in all_products_list:
+                expected_quantity = test_quantity[product][0]
                 assert all_products[product].check_quantity(expected_quantity), \
                     (f'Less product {all_products[product].name} in stock than expected: '
                      f'expected {expected_quantity}, got {all_products[product].quantity}')
 
-    def test_product_buy(self, all_products):
-        # TODO напишите проверки на метод buy
-        pass
+    def test_product_buy(self, all_products, test_quantity):
+        # напишите проверки на метод buy
+        all_products_list = all_products.keys()
+        with check:
+            for product in all_products_list:
+                available_quantity = test_quantity[product][0]
+                assert all_products[product].buy(available_quantity) == ValueError, \
+                    (f'More product {all_products[product].name} in stock than expected: '
+                     f'expected {available_quantity}, got {all_products[product].quantity}')
 
-    def test_product_buy_more_than_available(self, all_products):
-        # TODO напишите проверки на метод buy,
-        #  которые ожидают ошибку ValueError при попытке купить больше, чем есть в наличии
-        pass
+
+def test_product_buy_more_than_available(self, all_products, test_quantity):
+    #  напишите проверки на метод buy,
+    #  которые ожидают ошибку ValueError при попытке купить больше, чем есть в наличии
+    all_products_list = all_products.keys()
+    with check:
+        for product in all_products_list:
+            more_than_available_quantity = test_quantity[product][1]
+            assert all_products[product].buy(more_than_available_quantity) == ValueError, \
+                (f'More product {all_products[product].name} in stock than expected: '
+                 f'expected {more_than_available_quantity}, got {all_products[product].quantity}')
 
 
 class TestCart:
