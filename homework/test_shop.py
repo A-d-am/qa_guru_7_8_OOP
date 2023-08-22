@@ -132,9 +132,10 @@ class TestCart:
 
         cart.buy(user)
 
+    @pytest.mark.xfail(strict=True)
     def test_user_cant_buy_without_enough_money(self, all_products, user):
         car = all_products['car']
-
+        user.user_money = 1
         cart.add_product(car, 12)
 
         cart.buy(user)
