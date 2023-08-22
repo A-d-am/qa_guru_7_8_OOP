@@ -1,3 +1,21 @@
+import pytest
+
+
+class User:
+    """
+    Класс пользователя
+    """
+    login:str
+    user_money: float
+
+    def __init__(self,login, user_money):
+        self.login = login
+        self.user_money = user_money
+
+    def decrease_user_money(self, value: float):
+        self.user_money -= value
+
+
 class Product:
     """
     Класс продукта
@@ -58,8 +76,15 @@ class Cart:
         if product in self.products:
             old_buy_count = self.products.pop(product)
             new_buy_count = old_buy_count + buy_count
+
+            assert product.check_quantity(new_buy_count), (f"You can't add to cart more product than store have: "
+                                                           f"you want add {new_buy_count} of {product.name},"
+                                                           f" but there are only {product.quantity}")
             self.products[product] = new_buy_count
         else:
+            assert product.check_quantity(buy_count), (f"You can't add to cart more product than store have: "
+                                                       f"you want add {buy_count} of {product.name},"
+                                                       f" but there are only {product.quantity}")
             self.products[product] = buy_count
 
     def remove_product(self, product: Product, remove_count=None):
@@ -89,7 +114,7 @@ class Cart:
             total_price += product.price * self.products[product]
         return total_price
 
-    def buy(self, user_money):
+    def buy(self, user: User):
         """
         Метод покупки.
         Учтите, что товаров может не хватать на складе.
@@ -97,22 +122,16 @@ class Cart:
         """
         for product in self.products:
             if product.check_quantity(product.quantity) == ValueError:
-                raise ValueError
+                pytest.raises(ValueError)
 
         total_price = self.get_total_price()
-        if user_money < total_price:
-            user_cart = list()
-            for product in self.products:
-                user_cart.append(f'{product.name}, {product.quantity}, {product.price}')
-            return False, (f"User doesn't have money to buy this cart: {user_cart}. "
-                           f"User have {user_money}, but total price is {total_price}")
-        else:
-            user_money -= total_price
-            self.clear()
+        assert user.user_money > total_price, (f"User doesn't have money to buy all his cart: "
+                                          f"User have {user.user_money}, but total price is {total_price}")
+
+        user.decrease_user_money(total_price)
+        print(f"Thank you for your purchase, {user.login}! The amount of your purchase was {total_price}. "
+              f"{user.user_money} left in the account")
+        print('Have a nice day')
+        self.clear()
 
 
-class User:
-    """
-    Класс пользователя
-    """
-    user_money: int
