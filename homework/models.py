@@ -1,14 +1,11 @@
-import pytest
-
-
 class User:
     """
     Класс пользователя
     """
-    login:str
+    login: str
     user_money: float
 
-    def __init__(self,login, user_money):
+    def __init__(self, login, user_money):
         self.login = login
         self.user_money = user_money
 
@@ -122,16 +119,14 @@ class Cart:
         """
         for product in self.products:
             if product.check_quantity(product.quantity) == ValueError:
-                pytest.raises(ValueError)
+                return ValueError
 
         total_price = self.get_total_price()
         assert user.user_money > total_price, (f"User doesn't have money to buy all his cart: "
-                                          f"User have {user.user_money}, but total price is {total_price}")
+                                               f"User have {user.user_money}, but total price is {total_price}")
 
         user.decrease_user_money(total_price)
         print(f"Thank you for your purchase, {user.login}! The amount of your purchase was {total_price}. "
               f"{user.user_money} left in the account")
         print('Have a nice day')
         self.clear()
-
-
