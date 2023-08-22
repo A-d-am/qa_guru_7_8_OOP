@@ -89,10 +89,30 @@ class Cart:
             total_price += product.price * self.products[product]
         return total_price
 
-    def buy(self):
+    def buy(self, user_money):
         """
         Метод покупки.
         Учтите, что товаров может не хватать на складе.
         В этом случае нужно выбросить исключение ValueError
         """
-        raise NotImplementedError
+        for product in self.products:
+            if product.check_quantity(product.quantity) == ValueError:
+                raise ValueError
+
+        total_price = self.get_total_price()
+        if user_money < total_price:
+            user_cart = list()
+            for product in self.products:
+                user_cart.append(f'{product.name}, {product.quantity}, {product.price}')
+            return False, (f"User doesn't have money to buy this cart: {user_cart}. "
+                           f"User have {user_money}, but total price is {total_price}")
+        else:
+            user_money -= total_price
+            self.clear()
+
+
+class User:
+    """
+    Класс пользователя
+    """
+    user_money: int
