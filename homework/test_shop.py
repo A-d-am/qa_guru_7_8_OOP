@@ -86,6 +86,7 @@ class TestCart:
     """
 
     def test_user_can_add_product_to_cart(self, all_products):
+        cart.clear()
         book = all_products['book']
         car = all_products['car']
         pen = all_products['pen']
@@ -99,6 +100,7 @@ class TestCart:
             assert car in cart.products, f'Add to cart error: there is no {car} in the cart {cart.products.keys()}'
 
     def test_user_can_remove_position_from_cart_apiece(self, all_products):
+        cart.clear()
         book = all_products['book']
         buy_count = 120
         remove_count = 11
@@ -110,7 +112,9 @@ class TestCart:
                                                                  f'expected {buy_count - remove_count} product count, '
                                                                  f'got {cart.products[book]}')
 
+
     def test_user_can_remove_whole_position(self, all_products):
+        cart.clear()
         book = all_products['book']
         buy_count = 120
         remove_count = 120
@@ -122,6 +126,7 @@ class TestCart:
             f'Expected, that there is no {book.name} in the cart, but it is'
 
     def test_user_can_buy_all_cart(self, all_products, user):
+        cart.clear()
         book = all_products['book']
         car = all_products['car']
         pen = all_products['pen']
@@ -134,6 +139,7 @@ class TestCart:
 
     @pytest.mark.xfail(strict=True)
     def test_user_cant_buy_without_enough_money(self, all_products, user):
+        cart.clear()
         car = all_products['car']
         user.user_money = 1
         cart.add_product(car, 12)
