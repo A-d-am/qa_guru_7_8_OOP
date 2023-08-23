@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class User:
     """
     Класс пользователя
@@ -5,14 +9,11 @@ class User:
     login: str
     user_money: float
 
-    def __init__(self, login, user_money):
-        self.login = login
-        self.user_money = user_money
-
     def decrease_user_money(self, value: float):
         self.user_money -= value
 
 
+@dataclass
 class Product:
     """
     Класс продукта
@@ -21,12 +22,6 @@ class Product:
     price: float
     description: str
     quantity: int
-
-    def __init__(self, name, price, description, quantity):
-        self.name = name
-        self.price = price
-        self.description = description
-        self.quantity = quantity
 
     def check_quantity(self, quantity) -> bool:
         """
