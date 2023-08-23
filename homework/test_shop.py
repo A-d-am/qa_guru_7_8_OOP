@@ -72,7 +72,7 @@ class TestProducts:
         with check:
             for product in all_products_list:
                 more_than_available_quantity = quantity_for_tests[product][1]
-                assert all_products[product].buy(more_than_available_quantity) == ValueError, \
+                assert all_products[product].buy(more_than_available_quantity) is ValueError, \
                     (f'More product {all_products[product].name} in stock than expected: '
                      f'expected {more_than_available_quantity}, got {all_products[product].quantity}')
 
