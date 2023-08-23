@@ -112,15 +112,11 @@ class TestCart:
                                                                  f'expected {buy_count - remove_count} product count, '
                                                                  f'got {cart.products[book]}')
 
-
     def test_user_can_remove_whole_position(self, all_products):
         cart.clear()
         book = all_products['book']
-        buy_count = 120
-        remove_count = 120
-
-        cart.add_product(book, buy_count=buy_count)
-        cart.remove_product(book, remove_count=remove_count)
+        cart.add_product(book, buy_count=120)
+        cart.remove_product(book)
 
         assert book not in cart.products.keys(), \
             f'Expected, that there is no {book.name} in the cart, but it is'
