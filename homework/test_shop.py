@@ -130,12 +130,14 @@ class TestCart:
         book = all_products['book']
         car = all_products['car']
         pen = all_products['pen']
-
-        cart.add_product(book, 3)
+        user_money_before_buying = user.user_money
+        cart.add_product(book, 123)
         cart.add_product(car, 3)
         cart.add_product(pen, 3)
 
         cart.buy(user)
+        assert len(cart.products) == 0, f'Something went wrong, some product still in cart'
+        assert user_money_before_buying > user.user_money, f"Money wasn't debited from the user account"
 
     @pytest.mark.xfail(strict=True)
     def test_user_cant_buy_without_enough_money(self, all_products, user):
