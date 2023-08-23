@@ -10,6 +10,9 @@ class User:
     user_money: float
 
     def decrease_user_money(self, value: float):
+        if self.user_money < value:
+            raise ValueError(f" doesn't have money to buy all his cart: "
+                             f"User have {self.user_money}, but total price is {value}")
         self.user_money -= value
 
 
