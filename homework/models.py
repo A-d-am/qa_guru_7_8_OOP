@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-
 @dataclass
 class User:
     """
@@ -50,6 +49,7 @@ class Product:
         return hash(self.name + self.description)
 
 
+@dataclass
 class Cart:
     """
     Класс корзины. В нем хранятся продукты, которые пользователь хочет купить.
@@ -71,15 +71,8 @@ class Cart:
         if product in self.products:
             old_buy_count = self.products.pop(product)
             new_buy_count = old_buy_count + buy_count
-
-            assert product.check_quantity(new_buy_count), (f"You can't add to cart more product than store have: "
-                                                           f"you want add {new_buy_count} of {product.name},"
-                                                           f" but there are only {product.quantity}")
             self.products[product] = new_buy_count
         else:
-            assert product.check_quantity(buy_count), (f"You can't add to cart more product than store have: "
-                                                       f"you want add {buy_count} of {product.name},"
-                                                       f" but there are only {product.quantity}")
             self.products[product] = buy_count
 
     def remove_product(self, product: Product, remove_count=None):
@@ -115,16 +108,13 @@ class Cart:
         Учтите, что товаров может не хватать на складе.
         В этом случае нужно выбросить исключение ValueError
         """
-        for product in self.products:
-            if product.check_quantity(product.quantity) == ValueError:
-                return ValueError
 
-        total_price = self.get_total_price()
-        assert user.user_money > total_price, (f"User doesn't have money to buy all his cart: "
-                                               f"User have {user.user_money}, but total price is {total_price}")
+        for product, buy_count in self.products.items():
+            if product.quantity < buy_count:
+                raise ValueError(f"There is no {product.name} with quantity {buy_count},"
+                                 f" shop have only {product.quantity}")
+            product.buy(buy_count)
 
-        user.decrease_user_money(total_price)
-        print(f"Thank you for your purchase, {user.login}! The amount of your purchase was {total_price}. "
-              f"{user.user_money} left in the account")
-        print('Have a nice day')
+        user.decrease_user_money(self.get_total_price())
+
         self.clear()
